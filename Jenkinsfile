@@ -76,17 +76,6 @@ tools{
                  }
              }
          }
-	 post {
-           always {
-             emailext attachmentsPattern: 'trivyfs.txt,trivyimage.txt',
-                  attachLog: true,
-                  subject: "'${currentBuild.result}'",
-                  body: "Project: ${env.JOB_NAME}<br/>" +
-                        "Build Number: ${env.BUILD_NUMBER}<br/>" +
-                        "URL: ${env.BUILD_URL}<br/>",
-                  to: 'mir.ali19912@gmail.com'
-               }
-         }
-
+	
     }
 }
