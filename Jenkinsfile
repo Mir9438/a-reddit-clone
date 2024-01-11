@@ -9,7 +9,7 @@ tools{
         APP_NAME = "reddit-clone-pipeline"
         RELEASE = "1.0.0"
         DOCKER_USER = "mirali94"
-        DOCKER_PASS = 'DockeHub-Token'
+        DOCKER_PASS = 'DockerHub-Token'
         IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
 	  }
