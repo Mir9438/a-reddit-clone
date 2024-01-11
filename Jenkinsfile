@@ -15,11 +15,12 @@ tools{
 	  }
 
     stages {
-        stage('CleanWorkspace') {
-            steps {
-                clean()
-            }
+        stage('Clean Workspace') {
+   	     steps {
+      		  clean()
+	     }
         }
+
         stage('Git CheckOut') {
             steps {
                 git branch: 'main', url: 'https://github.com/Mir9438/a-reddit-clone.git'
