@@ -17,7 +17,7 @@ tools{
     stages {
         stage('CleanWorkspace') {
             steps {
-                clean()
+                cleanWs()
             }
         }
         stage('Git CheckOut') {
