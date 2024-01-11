@@ -17,7 +17,7 @@ tools{
     stages {
         stage('CleanWorkspace') {
             steps {
-                cleanWs()
+                clean()
             }
         }
         stage('Git CheckOut') {
@@ -48,6 +48,18 @@ tools{
                  sh "trivy fs . > trivyfs.txt"
             }
         } 
-       
+       stage("Build & Push Docker Image") {
+             steps {
+                 script {
+                     docker.withRegistry('',DOCKER_PASS) {
+                         docker_image = docker.build "${IMAGE_NAME}"
+                     }
+                     docker.withRegistry('',DOCKER_PASS) {
+                         docker_image.push("${IMAGE_TAG}")
+                         docker_image.push('latest')
+                     }
+                 }
+             }
+         }
     }
 }
