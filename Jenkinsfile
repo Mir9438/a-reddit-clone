@@ -9,7 +9,7 @@ tools{
         APP_NAME = "reddit-clone-pipeline"
         RELEASE = "1.0.0"
         DOCKER_USER = "mirali94"
-        DOCKER_PASS = 'DockerHub-Token'
+        DOCKER_PASS = 'DockeHub-Token'
         IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
 	  }
@@ -48,16 +48,18 @@ tools{
                  sh "trivy fs . > trivyfs.txt"
             }
         } 
-       stage("Build & Push Docker Image") {
+       stage("Trivy Image Scan") {
              steps {
                  script {
-                     docker.withRegistry('',DOCKER_PASS) {
-                         docker_image = docker.build "${IMAGE_NAME}"
-                     }
-                     docker.withRegistry('',DOCKER_PASS) {
-                         docker_image.push("${IMAGE_TAG}")
-                         docker_image.push('latest')
-                     }
+	              sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image mirali94/reddit-clone-pipeline --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table > trivyimage.txt')
+                 }
+             }
+         }
+	 stage ('Cleanup Artifacts') {
+             steps {
+                 script {
+                      sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
+                      sh "docker rmi ${IMAGE_NAME}:latest"
                  }
              }
          }
