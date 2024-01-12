@@ -12,6 +12,7 @@ tools{
         DOCKER_PASS = 'DockerHub-Token'
         IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
+	JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
 	  }
 
     stages {
@@ -75,18 +76,14 @@ tools{
                       sh "docker rmi ${IMAGE_NAME}:latest"
                  }
              }
-         }
-	 post {
-           always {
-              emailext attachmentsPattern: 'trivyfs.txt,trivyimage.txt',
-                  attachLog: true,
-                  subject: "'${currentBuild.result}'",
-                  body: "Project: ${env.JOB_NAME}<br/>" +
-                        "Build Number: ${env.BUILD_NUMBER}<br/>" +
-                        "URL: ${env.BUILD_URL}<br/>",
-                  to: 'mir.ali19912@gmail.com'
+          }
+	
+	stage("Trigger CD Pipeline") {
+            steps {
+                script {
+                    sh "curl -v -k --user clouduser:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'ec2-3-110-191-111.ap-south-1.compute.amazonaws.com:8080/job/Reddit-Clone-CD/buildWithParameters?token=gitops-token'"
                 }
+            }
          }
-
-    }
+     }
 }
